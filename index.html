@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Voice to Text</title>
+    <style>
+      * {
+        font-size: 16px;
+      }
+      body {
+        padding: 8px 16px;
+        font-family: sans-serif;
+        min-width: 90vw;
+        min-height: 90vh;
+      }
+      button, select, option {
+        padding: 8px;
+        margin: 8px;
+        width: 200px;
+      }
+      #output {
+        padding: 8px;
+        margin: 8px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        min-height: 100%;
+        height: 85vh;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="startButton">Start Voice Input</button>
+    <button id="clear">Clear</button>
+    <select id="language" onchange="recognition.lang = this.value">
+      <option value="en-US">English</option>
+      <option value="hi-IN">Hindi</option>
+    </select>
+    <div id="output" contentEditable="true">Hello</div>
+
+    <script>
+      const startButton = document.getElementById("startButton");
+      const outputDiv = document.getElementById("output");
+      const clearButton = document.getElementById("clear");
+
+      // Config
+      const LANG = "en-US";
+      clearButton.addEventListener("click", () => {
+        outputDiv.textContent = "";
+      });
+
+      const recognition = new (window.SpeechRecognition ||
+        window.webkitSpeechRecognition ||
+        window.mozSpeechRecognition ||
+        window.msSpeechRecognition)();
+
+      recognition.lang = LANG;
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        outputDiv.textContent += ` ${transcript}`;
+      };
+      
+      recognition.onstart = () => startButton.textContent = "Listening...";;
+      recognition.onend = () => startButton.textContent = "Start Voice Input";;
+      startButton.addEventListener("click", () => recognition.start());
+    </script>
+  </body>
+</html>
